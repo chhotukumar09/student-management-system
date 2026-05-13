@@ -11,14 +11,14 @@ import java.util.List;
 public interface StudentMapper {
      @Mapping(source = "collage.id", target = "collage_id")
      @Mapping(source = "course.id", target = "course_id")
-    StudentDTO MapToStudent(Student student);
+    StudentDTO MapToStudentDTO(Student student);
 
-    List<StudentDTO> mapDTO(List<Student> studentList);
+    List<StudentDTO> mapToStudentDTO(List<Student> studentList);
 
     @Mapping(target = "collage",ignore = true)
     @Mapping(target = "course",ignore = true)
     @Mapping(target = "attendance",ignore = true)
-    Student mapToDTO(StudentDTO studentDTO);
+    Student mapToStudentDTO(StudentDTO studentDTO);
 
 
 

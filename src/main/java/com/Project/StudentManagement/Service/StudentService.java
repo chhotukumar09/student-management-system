@@ -42,14 +42,16 @@ public class StudentService {
 
     // Get student
    public StudentDTO getById(Long id) {
-    return studentRepository.findById(id)
-            .map(studentMapper::MapToStudent)
-            .orElseThrow(() -> new ResourceNotFoundException("Student not found with id: " + id));
+
+           Student student = studentRepository.findById(id)
+                   .orElseThrow(()-> new RuntimeException("student not found"));
+           return studentMapper.MapToStudentDTO(student);
+
     }
      // get all Student
     public List<StudentDTO> getAllStudent(){
         List<Student> allstudent = studentRepository.findAll();
-        return studentMapper.mapDTO(allstudent);
+        return studentMapper.mapToStudentDTO(allstudent);
     }
 
     // update student
@@ -77,7 +79,7 @@ public class StudentService {
 
         }
         Student saved= studentRepository.save(student);
-        return studentMapper.MapToStudent(saved);
+        return studentMapper.MapToStudentDTO(saved);
     }
     // add new Student
     @Transactional

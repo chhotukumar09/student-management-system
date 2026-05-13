@@ -51,7 +51,7 @@ public class AuthService {
             String token = authUtil.generateToken(user);
 
             return new LoginResponseDTO(token, user.getId());
-        } catch (Exception e) {
+        } catch (Throwable e) {
             e.printStackTrace();
             throw e;
         }
@@ -59,18 +59,25 @@ public class AuthService {
 
     // SIGNUP METHOD
     public String signup(UserSignupDTO signupDTO) {
+        try {
 
-        if (userRepository.existsByUsername(signupDTO.getUsername())) {
-            throw new RuntimeException("Username already taken!");
+            if (userRepository.existsByUsername(signupDTO.getUsername())) {
+                throw new RuntimeException("Username already taken!");
+            }
+
+            User user = new User();
+            user.setUsername(signupDTO.getUsername());
+            user.setPassword(passwordEncoder.encode(signupDTO.getPassword()));
+            user.setRole(signupDTO.getRole());
+
+            userRepository.save(user);
+            return "User registered successfully!";
+
+        } catch (Throwable t) {
+
+            t.printStackTrace();
+           return t.getMessage();
         }
-
-        User user = new User();
-        user.setUsername(signupDTO.getUsername());
-        user.setPassword(passwordEncoder.encode(signupDTO.getPassword()));
-        user.setRole(Role.USER);
-
-        userRepository.save(user);
-        return "User registered successfully!";
     }
 
     @Transactional
@@ -90,7 +97,7 @@ public class AuthService {
             User oauth2User = new User();
             oauth2User.setUsername(username);
             oauth2User.setPassword(null);
-            oauth2User.setRole(Role.USER);
+            oauth2User.setRole(user.getRole());
             oauth2User.setProviderId(providerId);
             oauth2User.setProviderType(providerType);
             user = userRepository.save(oauth2User);
